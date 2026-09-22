@@ -1,0 +1,16 @@
+{
+  "actions" : {
+    "build" : {
+      "enabled" : true
+    },
+    "clean" : {
+      "enabled" : true,
+      "script" : "killall adb\nadb connect 192.168.43.1"
+    },
+    "run" : {
+      "enabled" : true,
+      "script" : ".\/gradlew installDebug"
+    }
+  },
+  "openLogOnRun" : "finish"
+}
