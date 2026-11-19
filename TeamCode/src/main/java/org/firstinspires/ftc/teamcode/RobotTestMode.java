@@ -12,20 +12,23 @@ import org.firstinspires.ftc.robotcore.external.navigation.CurrentUnit;
 
 //import org.firstinspires.ftc.robotcore.external.Telemetry;
 
-@TeleOp(name="Shooter Test")
-public class ShooterTestTeleOpMode extends LinearOpMode {
+@TeleOp(name="Robot Test")
+public class RobotTestMode extends LinearOpMode {
 
-    DcMotorEx shooter;
+    DcMotorEx intake;
+    DcMotorEx midtake;
 
     @Override
     public void runOpMode()
     {
-        shooter = hardwareMap.get(DcMotorEx.class,"shooter");
+        intake = hardwareMap.get(DcMotorEx.class,"intake");
+        midtake = hardwareMap.get(DcMotorEx.class,"midtake");
 
         waitForStart();
 
         while (opModeIsActive()) {
-            shooter.setPower(gamepad1.left_stick_y);
+            intake.setPower(gamepad1.left_stick_y);
+            midtake.setPower(gamepad1.left_stick_y);
         }
 
         //you probably dont want to do this.
