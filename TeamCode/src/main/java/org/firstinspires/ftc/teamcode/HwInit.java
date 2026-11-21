@@ -76,10 +76,10 @@ public abstract class HwInit extends OpMode
         intake = hardwareMap.dcMotor.get("intake");
         uptake = hardwareMap.dcMotor.get("uptake");
 
-        shooterP = hardwareMap.get(DcMotorEx.class, "shooterP");
+        shooterP = hardwareMap.get(DcMotorEx.class, "shooter1");
         shooterP.setMode(DcMotor.RunMode.RUN_USING_ENCODER);
         shooterP.setDirection(DcMotorSimple.Direction.REVERSE);
-        shooterN = hardwareMap.get(DcMotorEx.class, "shooterN");
+        shooterN = hardwareMap.get(DcMotorEx.class, "shooter2");
         shooterN.setMode(DcMotor.RunMode.RUN_USING_ENCODER);
         shooterN.setDirection(DcMotorSimple.Direction.REVERSE);
         color_sense.init(hardwareMap, "color_sensor");
