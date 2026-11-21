@@ -25,20 +25,16 @@ public class TeleOpMode extends LinearOpMode {
     public void runOpMode() throws InterruptedException {
 
         robot.init(hardwareMap);
+        //set drive speed at 0.5 initially
+        drive_speed = 0.85f;
 
-            //set drive speed at 0.5 initially
-            drive_speed = 0.85f;
-
-
-        waitForStart();
-
-
+            waitForStart();
 
         while (opModeIsActive()) {
-            loop();
+            teleLoop();
         }
     }
-    public void loop() {
+    public void teleLoop() {
         robot.limelight.localise(robot.imu.imu, telemetry);
 
         telemetry.addData("outtake P Velocity: ", robot.outtakeP.getVelocity());
