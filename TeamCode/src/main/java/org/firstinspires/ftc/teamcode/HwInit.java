@@ -32,16 +32,13 @@ public abstract class HwInit extends OpMode
     DcMotorEx frontRightMotor;
     DcMotorEx frontLeftMotor;
     DcMotor intake;
-    DcMotorEx shooter;
+    DcMotor uptake;
+    DcMotorEx shooterP;
+    DcMotorEx shooterN;
     double shootVeloHigh = 1780.0;
     PIDFCoefficients pidfCoefHigh = new PIDFCoefficients(300.0, 0.0 ,0.0,15.2); //1780 RPM
     double shootVeloMid = 1500.0;
     PIDFCoefficients pidfCoefMed = new PIDFCoefficients(300.0, 0.0 ,0.0,15.19); //1500 RPM
-    CRServo carousel;
-    CRServo lift;
-    MagneticLimit LoadSw = new MagneticLimit();
-    MagneticLimit ShootSw = new MagneticLimit();
-    TouchSwitch shooterPosSw = new TouchSwitch();
     ColorSensor color_sense = new ColorSensor();
     Limelight3A limelight;
     RGBlight RGB_light = new RGBlight();
@@ -50,11 +47,6 @@ public abstract class HwInit extends OpMode
     double speed_fine_inc = 0.05;
     boolean r_bump_1 = false;
     boolean l_bump_1 = false;
-    boolean carousel_on = false;
-    boolean move_to_shoot = false;
-    boolean move_to_load = false;
-    boolean lift_on = false;
-    double carousel_speed = 0.19;
     double robot_yaw;
     double robot_roll;
     double robot_pitch;
@@ -82,18 +74,14 @@ public abstract class HwInit extends OpMode
         backRightMotor.setZeroPowerBehavior(DcMotor.ZeroPowerBehavior.BRAKE);
 
         intake = hardwareMap.dcMotor.get("intake");
+        uptake = hardwareMap.dcMotor.get("uptake");
 
-        shooter = hardwareMap.get(DcMotorEx.class, "shooter");
-        shooter.setMode(DcMotor.RunMode.RUN_USING_ENCODER);
-        shooter.setDirection(DcMotorSimple.Direction.REVERSE);
-
-
-        carousel = hardwareMap.crservo.get("carousel");
-        lift = hardwareMap.crservo.get("lift");
-
-        LoadSw.init(hardwareMap, "load_switch");
-        ShootSw.init(hardwareMap, "shoot_switch");
-        shooterPosSw.init(hardwareMap, "shoot_pos_switch");
+        shooterP = hardwareMap.get(DcMotorEx.class, "shooter1");
+        shooterP.setMode(DcMotor.RunMode.RUN_USING_ENCODER);
+        shooterP.setDirection(DcMotorSimple.Direction.REVERSE);
+        shooterN = hardwareMap.get(DcMotorEx.class, "shooter2");
+        shooterN.setMode(DcMotor.RunMode.RUN_USING_ENCODER);
+        shooterN.setDirection(DcMotorSimple.Direction.REVERSE);
         color_sense.init(hardwareMap, "color_sensor");
         RGB_light.init(hardwareMap, "rgb_light");
 
@@ -106,7 +94,7 @@ public abstract class HwInit extends OpMode
     private void IMUinit()
     {
         RevHubOrientationOnRobot hubOrientation = new RevHubOrientationOnRobot(RevHubOrientationOnRobot.LogoFacingDirection.LEFT,
-                                                                               RevHubOrientationOnRobot.UsbFacingDirection.UP);
+                RevHubOrientationOnRobot.UsbFacingDirection.UP);
         myIMUParameters = new IMU.Parameters(hubOrientation);
 
         /*myIMUParameters= new IMU.Parameters(
@@ -264,7 +252,7 @@ public abstract class HwInit extends OpMode
             if (!result.getFiducialResults().isEmpty()) {
                 current_tag = result.getFiducialResults().get(0).getFiducialId();
             }
-            if (current_tag == 20 || current_tag == 24) {
+            if ((current_tag == 30 || current_tag == 31 ||current_tag == 32||current_tag == 33||current_tag == 34||current_tag == 35||current_tag == 36||current_tag == 37) || (current_tag == 38||current_tag == 39||current_tag == 40||current_tag == 41||current_tag == 42||current_tag == 43||current_tag == 44||current_tag == 45)) {
 
 
                 Pose3D botpose_mt2 = result.getBotpose_MT2();
@@ -280,135 +268,37 @@ public abstract class HwInit extends OpMode
         return true;
     }
 
-    public char[] tag_to_pattern(int tag)
-    {
-        char[] retval = null;
-        switch (tag)
-        {
-            case 21:
-                retval = "GPP".toCharArray();
-                break;
-            case 22:
-                retval = "PGP".toCharArray();
-                break;
-            case 23:
-                retval = "PPG".toCharArray();
-                break;
-        }
-        return retval;
-    }
 
     public void shooter_off()
     {
-        shooter.setPower(0.0);
+        shooterP.setPower(0.0);
+        shooterN.setPower(0.0);
     }
     public void shooter_on_far()
     {
         //shooter.setPower(0.85);
-        shooter.setPIDFCoefficients(DcMotor.RunMode.RUN_USING_ENCODER, pidfCoefHigh);
-        shooter.setVelocity(shootVeloHigh);
+        shooterP.setPIDFCoefficients(DcMotor.RunMode.RUN_USING_ENCODER, pidfCoefHigh);
+        shooterP.setVelocity(shootVeloHigh);
+        shooterN.setPIDFCoefficients(DcMotor.RunMode.RUN_USING_ENCODER, pidfCoefHigh);
+        shooterN.setVelocity(shootVeloHigh);
     }
     public void shooter_on_mid()
     {
         //shooter.setPower(0.75);
-        shooter.setPIDFCoefficients(DcMotor.RunMode.RUN_USING_ENCODER, pidfCoefMed);
-        shooter.setVelocity(shootVeloMid);
+        shooterP.setPIDFCoefficients(DcMotor.RunMode.RUN_USING_ENCODER, pidfCoefMed);
+        shooterP.setVelocity(shootVeloMid);
+        shooterN.setPIDFCoefficients(DcMotor.RunMode.RUN_USING_ENCODER, pidfCoefMed);
+        shooterN.setVelocity(shootVeloMid);
     }
     public void shooter_on_near()
     {
         //shooter.setPower(0.70);
-        shooter.setPIDFCoefficients(DcMotor.RunMode.RUN_USING_ENCODER, pidfCoefMed);
-        shooter.setVelocity(shootVeloMid - 50);
+        shooterP.setPIDFCoefficients(DcMotor.RunMode.RUN_USING_ENCODER, pidfCoefMed);
+        shooterP.setVelocity(shootVeloMid - 50);
+        shooterN.setPIDFCoefficients(DcMotor.RunMode.RUN_USING_ENCODER, pidfCoefMed);
+        shooterN.setVelocity(shootVeloMid - 50);
     }
 
-    public void run_lift_blocking()
-    {
-        try {
-            lift.setPower(1);
-            sleep(1200);
-            do {
-                lift.setPower(-1);
-            }while(!shooterPosSw.isLimitSwitchPressed());
-
-            lift.setPower(0);
-        } catch (InterruptedException e) {
-            lift.setPower(0);
-            telemetry.addData("error: ", e);
-            throw new RuntimeException(e);
-        }
-
-    }
-
-    public void set_carousel_mode()
-    {
-       if(!move_to_load ||
-          !move_to_shoot) {
-           if (LoadSw.isLimitSwitchClosed()) {
-               move_to_shoot = true;
-           } else if (ShootSw.isLimitSwitchClosed()) {
-               move_to_load = true;
-           } else {
-               move_to_load = true;
-           }
-       }
-    }
-
-    public void move_to_shoot_from_load(double dir)
-    {
-        carousel.setPower(dir * carousel_speed);
-        if(ShootSw.isLimitSwitchClosed())
-        {
-            carousel.setPower(0.0);
-            move_to_shoot = false;
-            /*if (!ShootSw.isLimitSwitchClosed())
-            {
-                carousel.setPower(-1*dir*.01);
-                carousel.setPower(0.0);
-            }*/
-        }
-
-    }
-    public void move_to_load_from_shoot(double dir)
-    {
-        carousel.setPower(dir * carousel_speed);
-        if(LoadSw.isLimitSwitchClosed())
-        {
-            carousel.setPower(0.0);
-            move_to_load = false;
-            /*if (!LoadSw.isLimitSwitchClosed())
-            {
-                carousel.setPower(-1*dir*.01);
-                carousel.setPower(0.0);
-            }*/
-        }
-    }
-    public void move_to_next_shoot_blocking(double dir)
-    {
-        carousel.setPower(dir * carousel_speed);
-        try{
-            sleep(1000);
-        } catch (InterruptedException e) {
-            throw new RuntimeException(e);
-        }
-        do{
-            carousel.setPower(dir * carousel_speed);
-        } while(!ShootSw.isLimitSwitchClosed());
-        carousel.setPower(0.0);
-    }
-
-    public void move_to_next_load_blocking(double dir)
-    {
-        carousel.setPower(dir * carousel_speed);
-        try{
-            sleep(1000);
-        } catch (InterruptedException e) {
-            throw new RuntimeException(e);
-        }
-        do{
-            carousel.setPower(dir * carousel_speed);
-        } while(!LoadSw.isLimitSwitchClosed());
-        carousel.setPower(0.0);
-    }
 
     public void update_light(String color)
     {
@@ -442,3 +332,4 @@ public abstract class HwInit extends OpMode
 
 
 }
+
