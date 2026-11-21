@@ -12,8 +12,7 @@ import org.firstinspires.ftc.robotcore.external.navigation.CurrentUnit;
 
 //import org.firstinspires.ftc.robotcore.external.Telemetry;
 
-@TeleOp(name="Mechawks-Tele-1")
-public class   TeleOpMode extends HwInit {
+public class TeleOpModeHWINIT extends HwInit {
     //far and mid use the trigger buttons which are analog,
 // but near is on the bumper which is just on/off
     float shooter_far_on = 0.0F;
@@ -23,7 +22,6 @@ public class   TeleOpMode extends HwInit {
     boolean uptake_on = false;
     boolean limelight_read = false;
 
-    long tick = 0;
 
     @Override
     public void init()
@@ -68,9 +66,9 @@ public class   TeleOpMode extends HwInit {
         if (limelight_read) {
             LimeLightRead();
             if (current_tag == 30 || current_tag == 31 ||current_tag == 32||current_tag == 33||current_tag == 34||current_tag == 35||current_tag == 36||current_tag == 37) {
-                update_light("RED");
-            } else if (current_tag == 38||current_tag == 39||current_tag == 40||current_tag == 41||current_tag == 42||current_tag == 43||current_tag == 44||current_tag == 45) {
                 update_light("BLUE");
+            } else if (current_tag == 38||current_tag == 39||current_tag == 40||current_tag == 41||current_tag == 42||current_tag == 43||current_tag == 44||current_tag == 45) {
+                update_light("RED");
             }
         }
     }
