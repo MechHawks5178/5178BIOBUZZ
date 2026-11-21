@@ -39,11 +39,16 @@ public class TeleOpMode extends LinearOpMode {
 
         robot.limelight.read();
         robot.joystickPowerDrive(gamepad1, drive_speed);
-        if (gamepad1.right_bumper) { robot.limelight.target(robot, telemetry); }
+        if (gamepad1.right_bumper) {
+            robot.limelight.target(robot, telemetry);
+        }
         robot.intake.setPower(gamepad2.left_stick_y);
         robot.uptake.setPower(gamepad2.right_stick_y);
         if (gamepad2.right_trigger > 0.2) {
             robot.runShooterAtVelocity(robot.outtakeP, 1500);
+        }
+        if (gamepad2.left_trigger > 0.2) {
+            robot.runShooterAtVelocity(robot.outtakeN, 1500);
         }
     }
 }
