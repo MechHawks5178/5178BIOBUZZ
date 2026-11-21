@@ -7,6 +7,7 @@ import com.qualcomm.robotcore.hardware.DcMotorSimple;
 import com.qualcomm.robotcore.hardware.Gamepad;
 import com.qualcomm.robotcore.hardware.HardwareMap;
 import com.qualcomm.robotcore.hardware.IMU;
+import com.qualcomm.robotcore.hardware.PIDFCoefficients;
 
 public class MHRobot {
     public DcMotorEx intake;
@@ -55,6 +56,12 @@ public class MHRobot {
         backLeftMotor.setPower(speed * (left_stick_x + left_stick_y - right_stick_x));
         frontRightMotor.setPower(speed * (-left_stick_x - left_stick_y - right_stick_x));
         frontLeftMotor.setPower(speed * (-left_stick_x + left_stick_y - right_stick_x));
+    }
+    public void runShooterAtVelocity(DcMotorEx shooter, int velocity)
+    {
+        PIDFCoefficients coefficients = new PIDFCoefficients(300.0, 0.0 ,0.0,15.2);
+        shooter.setPIDFCoefficients(DcMotor.RunMode.RUN_USING_ENCODER, coefficients);
+        shooter.setVelocity(velocity);
     }
 
 }
