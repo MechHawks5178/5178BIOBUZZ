@@ -21,8 +21,8 @@ public class MHRobot {
     public DcMotorEx frontLeftMotor;
     public DcMotorEx outtakeP;
     public DcMotorEx outtakeN;
-    public MHLimeLight limelight;
-    public MHImu imu;
+    public MHLimeLight limelight = new MHLimeLight();
+    public MHImu imu = new MHImu();
 
 
     public void init(HardwareMap hardwareMap)
@@ -30,9 +30,13 @@ public class MHRobot {
         voltageSensor = hardwareMap.get(VoltageSensor.class, "Control Hub");
 
         backRightMotor = hardwareMap.get(DcMotorEx.class,"backRightDrive");
+        backRightMotor.setMode(DcMotor.RunMode.RUN_WITHOUT_ENCODER);
         backLeftMotor = hardwareMap.get(DcMotorEx.class,"backLeftDrive");
+        backLeftMotor.setMode(DcMotor.RunMode.RUN_WITHOUT_ENCODER);
         frontRightMotor = hardwareMap.get(DcMotorEx.class,"frontRightDrive");
+        frontRightMotor.setMode(DcMotor.RunMode.RUN_WITHOUT_ENCODER);
         frontLeftMotor = hardwareMap.get(DcMotorEx.class,"frontLeftDrive");
+        frontLeftMotor.setMode(DcMotor.RunMode.RUN_WITHOUT_ENCODER);
         backLeftMotor.setZeroPowerBehavior(DcMotor.ZeroPowerBehavior.BRAKE);
         frontRightMotor.setZeroPowerBehavior(DcMotor.ZeroPowerBehavior.BRAKE);
         frontLeftMotor.setZeroPowerBehavior(DcMotor.ZeroPowerBehavior.BRAKE);
@@ -61,10 +65,11 @@ public class MHRobot {
         voltage = (float) voltageSensor.getVoltage();
     }
     public void powerDriveFromJoysticks(float left_stick_x, float left_stick_y, float right_stick_x, float speed) {
-        backRightMotor.setPower(speed * (left_stick_x - left_stick_y - right_stick_x));
-        backLeftMotor.setPower(speed * (left_stick_x + left_stick_y - right_stick_x));
-        frontRightMotor.setPower(speed * (-left_stick_x - left_stick_y - right_stick_x));
-        frontLeftMotor.setPower(speed * (-left_stick_x + left_stick_y - right_stick_x));
+        backRightMotor.setPower( speed * (left_stick_x - left_stick_y - right_stick_x));
+        backLeftMotor.setPower( speed * (left_stick_x + left_stick_y - right_stick_x));
+        frontRightMotor.setPower( speed * (-left_stick_x - left_stick_y - right_stick_x));
+        frontLeftMotor.setPower( speed * (-left_stick_x + left_stick_y - right_stick_x));
+
     }
     public void runShooterAtVelocity(DcMotorEx shooter, int velocity) {
         float F =  (float) (-449.47321*Math.pow(velocity,-0.619854f)+48.96472-(2.35*voltage));

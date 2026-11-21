@@ -12,7 +12,7 @@ import org.firstinspires.ftc.teamcode.MH.MHUtils;
 public class TeleOpMode extends LinearOpMode {
     float drive_speed = 0.85f;
 
-    private MHRobot robot;
+    public MHRobot robot = new MHRobot();
 
     @Override
     public void runOpMode() throws InterruptedException {
@@ -30,11 +30,12 @@ public class TeleOpMode extends LinearOpMode {
     public void teleLoop() {
         robot.limelight.localise(robot.imu.imu, telemetry);
 
-        telemetry.addData("outtake P Velocity: ", robot.outtakeP.getVelocity());
-        telemetry.addData("outtake P current(mA): ", robot.outtakeP.getCurrent(CurrentUnit.MILLIAMPS));
-        telemetry.addData("outtake N Velocity: ", robot.outtakeN.getVelocity());
-        telemetry.addData("outtake N current(mA): ", robot.outtakeN.getCurrent(CurrentUnit.MILLIAMPS));
-        telemetry.addData("current tag: ", robot.limelight.currentTag);
+        telemetry.addData("BL", robot.backLeftMotor.getVelocity());
+        telemetry.addData("FL", robot.frontLeftMotor.getVelocity());
+        telemetry.addData("BR", robot.backRightMotor.getVelocity());
+        telemetry.addData("FR", robot.frontRightMotor.getVelocity());
+
+        telemetry.update();
 
         robot.limelight.read();
         robot.joystickPowerDrive(gamepad1, drive_speed);
