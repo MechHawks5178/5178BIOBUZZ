@@ -1,5 +1,7 @@
 package org.firstinspires.ftc.teamcode.MH;
 
+import static org.firstinspires.ftc.teamcode.MH.MHUtils.map;
+
 import com.qualcomm.hardware.limelightvision.Limelight3A;
 import com.qualcomm.robotcore.hardware.DcMotor;
 import com.qualcomm.robotcore.hardware.DcMotorEx;
@@ -11,6 +13,13 @@ import com.qualcomm.robotcore.hardware.PIDFCoefficients;
 import com.qualcomm.robotcore.hardware.VoltageSensor;
 
 public class MHRobot {
+    public enum team {
+        BLUE,
+        RED,
+        NULL
+    }
+    team robotTeam = team.NULL;
+
     VoltageSensor voltageSensor;
     public float voltage;
     public DcMotorEx intake;
@@ -25,8 +34,9 @@ public class MHRobot {
     public MHImu imu = new MHImu();
 
 
-    public void init(HardwareMap hardwareMap)
+    public void init(HardwareMap hardwareMap, MHRobot.team t)
     {
+        robotTeam = t;
         voltageSensor = hardwareMap.get(VoltageSensor.class, "Control Hub");
 
         backRightMotor = hardwareMap.get(DcMotorEx.class,"backRightDrive");
@@ -52,7 +62,8 @@ public class MHRobot {
         outtakeN.setMode(DcMotor.RunMode.RUN_USING_ENCODER);
         outtakeN.setDirection(DcMotorSimple.Direction.REVERSE);
 
-        limelight.init(hardwareMap.get(Limelight3A.class, "limelight"));
+        //TODO : CHANGE THIS ANGLE AND HEIGHT OR DISTANCE AND ANGLE CALCS WILL BE WRONG
+        limelight.init(hardwareMap.get(Limelight3A.class, "limelight"), 0, 0);
 
         imu.init(hardwareMap.get(IMU.class, "imu"), imu.getConfig1());
     }
@@ -78,6 +89,41 @@ public class MHRobot {
         PIDFCoefficients coefficients = new PIDFCoefficients(275, 0.0 ,0.005,15.2);
         shooter.setPIDFCoefficients(DcMotor.RunMode.RUN_USING_ENCODER, coefficients);
         shooter.setVelocity(velocity);
+    }
+
+    public void setAllMotorPowers(double power) {
+        backRightMotor.setPower(power);
+        backLeftMotor.setPower(power);
+        frontRightMotor.setPower(power);
+        frontLeftMotor.setPower(power);
+    }
+    public void setAllMotorZeroPowerBehaviours(DcMotor.ZeroPowerBehavior behaviour) {
+        backRightMotor.setZeroPowerBehavior(behaviour);
+        backLeftMotor.setZeroPowerBehavior(behaviour);
+        frontRightMotor.setZeroPowerBehavior(behaviour);
+        frontLeftMotor.setZeroPowerBehavior(behaviour);
+    }
+
+    public float limelightCircle(float leftStickX, float leftStickY, float speed, float rightStickTolerance) {
+        //a good default tolerance (from 3583-2025) is 0.1f
+
+        //dont move if issues
+        if (!limelight.latestResult.isValid() || limelight.latestTagTeam == team.NULL) { return 0; };
+
+
+        float rightStickXFromTx = 1;
+
+        //make the amount you turn correspond to how big the angle is on a linear map
+        rightStickXFromTx *= Math.abs(map(0f, 1, 0, 40, Math.abs(limelight.latestAimPointCorrectionAngle)));
+        if (Math.abs(rightStickXFromTx) < rightStickTolerance) {
+            rightStickXFromTx = 0;
+            setAllMotorZeroPowerBehaviours(DcMotor.ZeroPowerBehavior.BRAKE);
+            setAllMotorPowers(0);
+        }
+        //make the amount you turn left or right based on the angle
+        rightStickXFromTx *= Math.signum(limelight.latestAimPointCorrectionAngle);
+        powerDriveFromJoysticks(leftStickX, leftStickY, rightStickXFromTx, speed);
+        return Math.abs(rightStickXFromTx);
     }
 
 }
