@@ -59,6 +59,8 @@ public class TeleOpMode extends LinearOpMode {
 
         if (gamepad2.right_trigger > 0.2) {
             robot.runShooterAtVelocity(robot.outtakeP, 1500);
+            //TODO : do the distance scaling thing
+            //robot.runShooterAtVelocity(robot.outtakeP, robot.getShooterVelocityFromDistance(robot.limelight.latestAimPointDistance));
         }
     }
 

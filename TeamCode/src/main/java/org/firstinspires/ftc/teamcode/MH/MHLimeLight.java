@@ -124,6 +124,7 @@ public class MHLimeLight {
 
                 latestApriltagYaw = (float) latestResult.getFiducialResults().get(0).getTargetPoseRobotSpace().getOrientation().getPitch();
 
+                updateAimPointCorrectionAngleAndDistance();
 
                 return true;
             }

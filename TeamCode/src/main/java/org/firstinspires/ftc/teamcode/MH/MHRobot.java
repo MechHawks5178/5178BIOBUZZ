@@ -82,6 +82,12 @@ public class MHRobot {
         frontLeftMotor.setPower( speed * (-left_stick_x + left_stick_y - right_stick_x));
 
     }
+    public int getShooterVelocityFromDistance(float distance) {
+        //TODO : Test for values and actually make velocity scale, change a & b
+        float a = 1;
+        float b = 1;
+        return (int) Math.floor(a * distance + b);
+    }
     public void runShooterAtVelocity(DcMotorEx shooter, int velocity) {
         float F =  (float) (-449.47321*Math.pow(velocity,-0.619854f)+48.96472-(2.35*voltage));
 
