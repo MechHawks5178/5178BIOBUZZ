@@ -18,7 +18,7 @@ public class MHRobot {
         RED,
         NULL
     }
-    team robotTeam = team.NULL;
+    public team robotTeam = team.NULL;
 
     VoltageSensor voltageSensor;
     public float voltage;
@@ -57,10 +57,12 @@ public class MHRobot {
 
         outtakeP = hardwareMap.get(DcMotorEx.class, "outtakeP");
         outtakeP.setMode(DcMotor.RunMode.RUN_USING_ENCODER);
-        outtakeP.setDirection(DcMotorSimple.Direction.REVERSE);
+        outtakeP.setDirection(DcMotorSimple.Direction.FORWARD);
+        outtakeP.setZeroPowerBehavior(DcMotor.ZeroPowerBehavior.FLOAT);
         outtakeN = hardwareMap.get(DcMotorEx.class, "outtakeN");
         outtakeN.setMode(DcMotor.RunMode.RUN_USING_ENCODER);
         outtakeN.setDirection(DcMotorSimple.Direction.REVERSE);
+        outtakeN.setZeroPowerBehavior(DcMotor.ZeroPowerBehavior.FLOAT);
 
         //TODO : CHANGE THIS ANGLE AND HEIGHT OR DISTANCE AND ANGLE CALCS WILL BE WRONG
         limelight.init(hardwareMap.get(Limelight3A.class, "limelight"), 0, 0);
@@ -110,11 +112,11 @@ public class MHRobot {
         frontLeftMotor.setZeroPowerBehavior(behaviour);
     }
 
-    public float limelightCircle(float leftStickX, float leftStickY, float speed, float rightStickTolerance) {
+    public void limelightCircle(float leftStickX, float leftStickY, float speed, float rightStickTolerance) {
         //a good default tolerance (from 3583-2025) is 0.1f
 
         //dont move if issues
-        if (!limelight.latestResult.isValid() || limelight.latestTagTeam == team.NULL) { return 0; };
+        if (!limelight.latestResult.isValid() || limelight.latestTagTeam == team.NULL) { return; };
 
 
         float rightStickXFromTx = 1;
@@ -129,7 +131,7 @@ public class MHRobot {
         //make the amount you turn left or right based on the angle
         rightStickXFromTx *= Math.signum(limelight.latestAimPointCorrectionAngle);
         powerDriveFromJoysticks(leftStickX, leftStickY, rightStickXFromTx, speed);
-        return Math.abs(rightStickXFromTx);
+        Math.abs(rightStickXFromTx);
     }
 
 }

@@ -1,17 +1,11 @@
-package org.firstinspires.ftc.teamcode;
+package org.firstinspires.ftc.teamcode.old;
 
-import static com.qualcomm.robotcore.util.ElapsedTime.Resolution.MILLISECONDS;
 //import static java.lang.Thread.sleep;
 
 import static java.lang.Thread.sleep;
 
-import com.qualcomm.robotcore.eventloop.opmode.TeleOp;
-import com.qualcomm.robotcore.util.ElapsedTime;
-
-import org.firstinspires.ftc.robotcore.external.navigation.CurrentUnit;
-
 //import org.firstinspires.ftc.robotcore.external.Telemetry;
-
+/*
 public class TeleOpModeHWINIT extends HwInit {
     //far and mid use the trigger buttons which are analog,
 // but near is on the bumper which is just on/off
@@ -83,13 +77,6 @@ public class TeleOpModeHWINIT extends HwInit {
     }
 
     public void dual_joy_control(float left_stick_x, float left_stick_y, float right_stick_x, float right_stick_y) {
-        /*TABLE OF INP
-             LX  LY  RX
-        RR   +   -   -
-        RL   +   +   -
-        FR   -   -   -
-        FL   -   +   -
-        */
 
         backRightMotor.setPower(speed * (left_stick_x - left_stick_y - right_stick_x));
         backLeftMotor.setPower(speed * (left_stick_x + left_stick_y - right_stick_x));
@@ -155,3 +142,4 @@ public class TeleOpModeHWINIT extends HwInit {
 
     }
 }
+*/

@@ -5,8 +5,8 @@ public class MHUtils {
     public float avg(float[] nums) {
         int numlen = nums.length;
         float tot = 0;
-        for (int i = 0; i < numlen; i++) {
-            tot += nums[i];
+        for (float num : nums) {
+            tot += num;
         }
         tot /= numlen;
         return tot;

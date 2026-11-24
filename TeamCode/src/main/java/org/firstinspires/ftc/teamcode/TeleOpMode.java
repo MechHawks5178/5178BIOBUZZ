@@ -3,12 +3,9 @@ package org.firstinspires.ftc.teamcode;
 import com.qualcomm.robotcore.eventloop.opmode.LinearOpMode;
 import com.qualcomm.robotcore.eventloop.opmode.TeleOp;
 
-import org.firstinspires.ftc.robotcore.external.Telemetry;
-import org.firstinspires.ftc.robotcore.external.navigation.CurrentUnit;
 import org.firstinspires.ftc.teamcode.MH.MHRobot;
-import org.firstinspires.ftc.teamcode.MH.MHUtils;
 
-@TeleOp(name="Mechawks-Tele-1")
+@TeleOp(name="Main Mech Hawks TeleOp")
 public class TeleOpMode extends LinearOpMode {
     float driveSpeed = 0.85f;
 
@@ -22,7 +19,23 @@ public class TeleOpMode extends LinearOpMode {
         //set drive speed at 0.5 initially
         driveSpeed = 0.85f;
 
-            waitForStart();
+        while (!isStarted() && !isStopRequested()) {
+            if (gamepad1.x) {
+                robot.robotTeam = MHRobot.team.BLUE;
+                telemetry.addData("Team : ", "BLUE");
+                telemetry.update();
+            }
+            if (gamepad1.b) {
+                robot.robotTeam = MHRobot.team.RED;
+                telemetry.addData("Team : ", "RED");
+                telemetry.update();
+            }
+            if (gamepad1.a) {
+                robot.robotTeam = MHRobot.team.NULL;
+                telemetry.addData("Team : ", "NULL");
+                telemetry.update();
+            }
+        }
 
         while (opModeIsActive()) {
             teleLoop();
@@ -54,13 +67,15 @@ public class TeleOpMode extends LinearOpMode {
 
         //PLAYER 2 CONTROLS
 
-        robot.intake.setPower(gamepad2.left_stick_y);
+        robot.intake.setPower(-gamepad2.left_stick_y);
         robot.uptake.setPower(gamepad2.right_stick_y);
 
         if (gamepad2.right_trigger > 0.2) {
             robot.runShooterAtVelocity(robot.outtakeP, 1500);
             //TODO : do the distance scaling thing
             //robot.runShooterAtVelocity(robot.outtakeP, robot.getShooterVelocityFromDistance(robot.limelight.latestAimPointDistance));
+        } else {
+            robot.runShooterAtVelocity(robot.outtakeP, 0);
         }
     }
 

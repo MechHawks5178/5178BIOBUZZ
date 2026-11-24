@@ -50,7 +50,7 @@ public class MHLimeLight {
         TODO : CHANGE apriltagHeightInches, it's the value from last year,
             account for qpriltag height being able to change. Oh no.
         */
-        float apriltagHeightInches = 29.5f;
+        float apriltagHeightInches = 48f;
 
         float heightDifferenceIn = apriltagHeightInches - mountHeightInches;
 
@@ -58,12 +58,12 @@ public class MHLimeLight {
         //returns distance
         return (float) ((float) heightDifferenceIn * (Math.cos(Math.toRadians(totalAngleDegrees)))/Math.sin(Math.toRadians(totalAngleDegrees)));
     }
-    public boolean updateAimPointCorrectionAngleAndDistance() {
+    public void updateAimPointCorrectionAngleAndDistance() {
         //did all this math last year. all ik now is that it seeeeeeems to work.
         //all of this is FLOOR-WISE. no height involved.
 
         if (!latestResult.isValid()) {
-            return false;
+            return;
         }
         float distance = getApriltagFloorDistance();
         float latestTxRadians = (float) Math.toRadians(latestTx);
@@ -81,7 +81,6 @@ public class MHLimeLight {
         latestAimPointCorrectionAngle = (float) Math.toDegrees(Math.atan(x2/y2));
         //floor distance to AIM POINT NOT TAG!!
         latestAimPointDistance = (float) Math.sqrt(Math.pow(x2,2)+Math.pow(y2, 2));
-        return true;
     }
 
     public boolean localise(IMU imu, Telemetry telemetry)
