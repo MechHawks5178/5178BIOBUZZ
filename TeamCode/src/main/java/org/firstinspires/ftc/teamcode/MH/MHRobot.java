@@ -99,6 +99,16 @@ public class MHRobot {
         shooter.setVelocity(velocity);
     }
 
+    //probably works? might need to be reversed bc motor goes the other way and I copied from shooter code
+    public void runIntakeAtVelocity(int velocity) {
+        float F =  (float) (-449.47321*Math.pow(velocity,-0.619854f)+48.96472-(2.35*voltage));
+
+        //p used to be 300 - test!!
+        PIDFCoefficients coefficients = new PIDFCoefficients(275, 0.0 ,0.005,15.2);
+        intake.setPIDFCoefficients(DcMotor.RunMode.RUN_USING_ENCODER, coefficients);
+        intake.setVelocity(velocity);
+    }
+
     public void setAllMotorPowers(double power) {
         backRightMotor.setPower(power);
         backLeftMotor.setPower(power);

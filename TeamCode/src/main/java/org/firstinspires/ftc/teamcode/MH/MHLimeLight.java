@@ -145,7 +145,6 @@ public class MHLimeLight {
     public boolean target(MHRobot robot, Telemetry telemetry)
     {
         IMU imu = robot.imu.imu;
-        //TODO: only target on tags 20 and 24
         float robotYaw = (float) imu.getRobotYawPitchRollAngles().getYaw();
         limelight.updateRobotOrientation(robotYaw);
         LLResult result = latestResult;

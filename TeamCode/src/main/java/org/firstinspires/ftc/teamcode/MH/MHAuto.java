@@ -3,6 +3,7 @@ package org.firstinspires.ftc.teamcode.MH;
 
 import com.qualcomm.robotcore.eventloop.opmode.Autonomous;
 import com.qualcomm.robotcore.eventloop.opmode.LinearOpMode;
+import org.firstinspires.ftc.teamcode.MH.MHLimeLight;
 
 @Autonomous(name="Mech Hawks Auto")
 public class MHAuto extends LinearOpMode {
@@ -10,15 +11,28 @@ public class MHAuto extends LinearOpMode {
 
     @Override
     public void runOpMode() throws InterruptedException {
+        //first off, we need to know what team we're on for pedro pathing to work good. get team (same as teleop does)
+        if (MHRobot.team.RED) {
+            //pedro pathing to hives (Zel)
+
+            //outtake on! yaey
+            robot.runShooterAtVelocity(robot.outtakeP, 1500);
+            robot.runShooterAtVelocity(robot.outtakeN, 1500);
+
+            //outtake off (will add later)
 
 
-        //read april tag up on high (or low) (two functions for reading april tags? h/l) <- is necessary with pedro pathing?
-        //pedro pathing to hives (Ryan)
+            //pedropathing to flowers probably to get nectars
+
+            //intake and paddle
+            robot.runIntakeAtVelocity(1500);
+
+
+        }
 
 
 
-        robot.runShooterAtVelocity(robot.outtakeP, 1500);
-        robot.runShooterAtVelocity(robot.outtakeN, 1500);
+
     }
 
 
