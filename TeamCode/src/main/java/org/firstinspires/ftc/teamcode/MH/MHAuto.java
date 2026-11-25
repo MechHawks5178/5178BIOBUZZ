@@ -1,13 +1,11 @@
-package org.firstinspires.ftc.teamcode.Auto;
+package org.firstinspires.ftc.teamcode.MH;
 
 
 import com.qualcomm.robotcore.eventloop.opmode.Autonomous;
 import com.qualcomm.robotcore.eventloop.opmode.LinearOpMode;
 
-import org.firstinspires.ftc.teamcode.MH.MHRobot;
-
 @Autonomous(name="Mech Hawks Auto")
-public class MechAuto extends LinearOpMode {
+public class MHAuto extends LinearOpMode {
     public MHRobot robot = new MHRobot();
 
     @Override
@@ -15,7 +13,7 @@ public class MechAuto extends LinearOpMode {
 
 
         //read april tag up on high (or low) (two functions for reading april tags? h/l) <- is necessary with pedro pathing?
-        //pedro pathing to hives
+        //pedro pathing to hives (Ryan)
 
 
 
