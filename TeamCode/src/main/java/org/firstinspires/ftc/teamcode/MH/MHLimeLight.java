@@ -32,6 +32,7 @@ public class MHLimeLight {
     //set in init: physical position/angle of the limelight for distance calcs n stuff
     public float mountAngleDegrees;
     public float mountHeightInches;
+    public float maxTargetSpeed = 0.9f;
     public Limelight3A limelight;
 
     public void init(Limelight3A l, float angle, float height) {
@@ -128,6 +129,7 @@ public class MHLimeLight {
                 return true;
             }
         }
+        latestAimPointCorrectionAngle = 0;
         return false;
     }
     public MHRobot.team getTagTeam(int tag) {

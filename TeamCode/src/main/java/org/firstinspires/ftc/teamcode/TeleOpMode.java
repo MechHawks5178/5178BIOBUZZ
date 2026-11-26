@@ -8,6 +8,7 @@ import org.firstinspires.ftc.teamcode.MH.MHRobot;
 @TeleOp(name="Main Mech Hawks TeleOp")
 public class TeleOpMode extends LinearOpMode {
     float driveSpeed = 0.85f;
+    int shootVelocity = 1500;
 
     public MHRobot robot = new MHRobot();
 
@@ -15,7 +16,7 @@ public class TeleOpMode extends LinearOpMode {
     public void runOpMode() throws InterruptedException {
 
         //TODO : Make it so teleop users can select team
-        robot.init(hardwareMap, MHRobot.team.NULL);
+        robot.init(hardwareMap, MHRobot.team.NULL, telemetry);
         //set drive speed at 0.5 initially
         driveSpeed = 0.85f;
 
@@ -47,12 +48,15 @@ public class TeleOpMode extends LinearOpMode {
         telemetry.addData("BR", robot.backRightMotor.getVelocity());
         telemetry.addData("FR", robot.frontRightMotor.getVelocity());
 
-        telemetry.update();
 
         //save processing/battery if limelight not needed
         if (gamepad1.right_bumper || gamepad2.right_trigger > 0.2) {
             robot.limelight.update();
         }
+
+        telemetry.addData("Latest Angle", robot.limelight.latestAimPointCorrectionAngle);
+        telemetry.addData("Latest Distance", robot.limelight.latestAimPointDistance);
+        telemetry.addData("Latest Target Speed", robot.limelight.maxTargetSpeed);
 
         //PLAYER 1 CONTROLS
 
@@ -60,7 +64,7 @@ public class TeleOpMode extends LinearOpMode {
         if (gamepad1.right_bumper) {
             //we are replacing 'limelight target' with 'limelight circle' which allows non-rotational movement
             //robot.limelight.target(robot, telemetry);
-            robot.limelightCircle(gamepad1.left_stick_x,gamepad1.left_stick_y,driveSpeed,0.1f);
+            robot.limelightCircle(gamepad1.left_stick_x,gamepad1.left_stick_y,driveSpeed,0.2f, 1.5f);
         } else {
             robot.joystickPowerDrive(gamepad1, driveSpeed);
         }
@@ -70,13 +74,19 @@ public class TeleOpMode extends LinearOpMode {
         robot.intake.setPower(-gamepad2.left_stick_y);
         robot.uptake.setPower(gamepad2.right_stick_y);
 
+        if (gamepad2.dpadDownWasPressed())  { shootVelocity -= 50; }
+        if (gamepad2.dpadUpWasPressed())  { shootVelocity += 50; }
+        telemetry.addData("shootVelocity", shootVelocity);
+        telemetry.addData("currentShooterVelocity", robot.outtakeP.getVelocity());
         if (gamepad2.right_trigger > 0.2) {
-            robot.runShooterAtVelocity(robot.outtakeP, 1500);
+            //robot.runShooterAtVelocity(robot.outtakeP, shootVelocity);
             //TODO : do the distance scaling thing
-            //robot.runShooterAtVelocity(robot.outtakeP, robot.getShooterVelocityFromDistance(robot.limelight.latestAimPointDistance));
+            robot.runShooterAtVelocity(robot.outtakeP, robot.getShooterVelocityFromDistance(robot.limelight.latestAimPointDistance));
         } else {
             robot.runShooterAtVelocity(robot.outtakeP, 0);
         }
+
+        telemetry.update();
     }
 
 }

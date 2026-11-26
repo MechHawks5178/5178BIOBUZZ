@@ -12,6 +12,8 @@ import com.qualcomm.robotcore.hardware.IMU;
 import com.qualcomm.robotcore.hardware.PIDFCoefficients;
 import com.qualcomm.robotcore.hardware.VoltageSensor;
 
+import org.firstinspires.ftc.robotcore.external.Telemetry;
+
 public class MHRobot {
     public enum team {
         BLUE,
@@ -33,9 +35,11 @@ public class MHRobot {
     public MHLimeLight limelight = new MHLimeLight();
     public MHImu imu = new MHImu();
 
+    Telemetry telemetry;
 
-    public void init(HardwareMap hardwareMap, MHRobot.team t)
+    public void init(HardwareMap hardwareMap, MHRobot.team t, Telemetry tel)
     {
+        telemetry = tel;
         robotTeam = t;
         voltageSensor = hardwareMap.get(VoltageSensor.class, "Control Hub");
 
@@ -65,7 +69,7 @@ public class MHRobot {
         outtakeN.setZeroPowerBehavior(DcMotor.ZeroPowerBehavior.FLOAT);
 
         //TODO : CHANGE THIS ANGLE AND HEIGHT OR DISTANCE AND ANGLE CALCS WILL BE WRONG
-        limelight.init(hardwareMap.get(Limelight3A.class, "limelight"), 0, 0);
+        limelight.init(hardwareMap.get(Limelight3A.class, "limelight"), 30, 14);
 
         imu.init(hardwareMap.get(IMU.class, "imu"), imu.getConfig1());
     }
@@ -86,9 +90,10 @@ public class MHRobot {
     }
     public int getShooterVelocityFromDistance(float distance) {
         //TODO : Test for values and actually make velocity scale, change a & b
-        float a = 1;
-        float b = 1;
-        return (int) Math.floor(a * distance + b);
+        float a = 3.814f;
+        float b = -393;
+        float c = 11454;
+        return (int) Math.floor(a * distance * distance + b * distance + c);
     }
     public void runShooterAtVelocity(DcMotorEx shooter, int velocity) {
         float F =  (float) (-449.47321*Math.pow(velocity,-0.619854f)+48.96472-(2.35*voltage));
@@ -122,24 +127,35 @@ public class MHRobot {
         frontLeftMotor.setZeroPowerBehavior(behaviour);
     }
 
-    public void limelightCircle(float leftStickX, float leftStickY, float speed, float rightStickTolerance) {
+    public void limelightCircle(float leftStickX, float leftStickY, float speed, float rightStickTolerance, float angleTolerance) {
         //a good default tolerance (from 3583-2025) is 0.1f
 
-        //dont move if issues
-        if (!limelight.latestResult.isValid() || limelight.latestTagTeam == team.NULL) { return; };
-
+        if (speed > limelight.maxTargetSpeed) {
+            speed = limelight.maxTargetSpeed;
+        }
 
         float rightStickXFromTx = 1;
+        //dont move if issues
+        /*if (!limelight.latestResult.isValid() || limelight.latestTagTeam == team.NULL || limelight.latestAimPointCorrectionAngle == 0) {
+            return;
+        };*/
+
 
         //make the amount you turn correspond to how big the angle is on a linear map
         rightStickXFromTx *= Math.abs(map(0f, 1, 0, 40, Math.abs(limelight.latestAimPointCorrectionAngle)));
         if (Math.abs(rightStickXFromTx) < rightStickTolerance) {
             rightStickXFromTx = 0;
+            if (Math.abs(limelight.latestAimPointCorrectionAngle) > angleTolerance) {
+                rightStickXFromTx = rightStickTolerance;
+            }
             setAllMotorZeroPowerBehaviours(DcMotor.ZeroPowerBehavior.BRAKE);
-            setAllMotorPowers(0);
+            if (limelight.latestAimPointCorrectionAngle == 0) {
+                setAllMotorZeroPowerBehaviours(DcMotor.ZeroPowerBehavior.FLOAT);
+            }
         }
         //make the amount you turn left or right based on the angle
         rightStickXFromTx *= Math.signum(limelight.latestAimPointCorrectionAngle);
+        telemetry.addData("rightStickXFromtTx",rightStickXFromTx);
         powerDriveFromJoysticks(leftStickX, leftStickY, rightStickXFromTx, speed);
         Math.abs(rightStickXFromTx);
     }

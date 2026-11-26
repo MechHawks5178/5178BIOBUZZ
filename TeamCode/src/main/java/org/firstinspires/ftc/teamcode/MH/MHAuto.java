@@ -11,8 +11,10 @@ public class MHAuto extends LinearOpMode {
 
     @Override
     public void runOpMode() throws InterruptedException {
+
+        robot.init(hardwareMap, MHRobot.team.NULL, telemetry);
         //first off, we need to know what team we're on for pedro pathing to work good. get team (same as teleop does)
-        if (MHRobot.team.RED) {
+        if (robot.robotTeam == MHRobot.team.RED) {
             //pedro pathing to hives (Zel)
 
             //outtake on! yaey
