@@ -5,6 +5,7 @@ import com.qualcomm.robotcore.eventloop.opmode.Autonomous;
 import com.qualcomm.robotcore.eventloop.opmode.LinearOpMode;
 import org.firstinspires.ftc.teamcode.MH.MHLimeLight;
 
+//Looking at the robot with the ramp facing you, the odometry pods from left to right are 0, 1, and 2
 @Autonomous(name="Mech Hawks Auto")
 public class MHAuto extends LinearOpMode {
     public MHRobot robot = new MHRobot();
@@ -30,6 +31,19 @@ public class MHAuto extends LinearOpMode {
             robot.runIntake(1);
 
 
+        } else if (robot.getTeam() == MHRobot.team.BLUE) {
+            //pedro pathing to hives
+
+            //outtake on
+            robot.runShooterAtVelocity(robot.outtakeP, 1500);
+            robot.runShooterAtVelocity(robot.outtakeN, 1500);
+
+            //outtake off
+
+            //pedropathing to flowers (nectar pls
+
+            //intake and paddle
+            robot.runIntake(1);
         }
 
 
