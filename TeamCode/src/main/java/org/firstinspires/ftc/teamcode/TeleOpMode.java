@@ -18,24 +18,23 @@ public class TeleOpMode extends LinearOpMode {
         //TODO : Make it so teleop users can select team
         robot.init(hardwareMap, MHRobot.team.NULL, telemetry);
         //set drive speed at 0.5 initially
-        driveSpeed = 0.85f;
+        driveSpeed = 1f;
 
         while (!isStarted() && !isStopRequested()) {
             if (gamepad1.x) {
-                robot.robotTeam = MHRobot.team.BLUE;
+                robot.setTeam(MHRobot.team.BLUE);
                 telemetry.addData("Team : ", "BLUE");
-                telemetry.update();
             }
             if (gamepad1.b) {
-                robot.robotTeam = MHRobot.team.RED;
+                robot.setTeam(MHRobot.team.RED);
                 telemetry.addData("Team : ", "RED");
-                telemetry.update();
             }
             if (gamepad1.a) {
-                robot.robotTeam = MHRobot.team.NULL;
+                robot.setTeam(MHRobot.team.NULL);
                 telemetry.addData("Team : ", "NULL");
-                telemetry.update();
             }
+            telemetry.addData("Pipeline",robot.limelight.pipeline);
+            telemetry.update();
         }
 
         while (opModeIsActive()) {
@@ -53,10 +52,12 @@ public class TeleOpMode extends LinearOpMode {
         if (gamepad1.right_bumper || gamepad2.right_trigger > 0.2) {
             robot.limelight.update();
         }
+        telemetry.addData("TEMP", robot.limelight.TEMP);
 
         telemetry.addData("Latest Angle", robot.limelight.latestAimPointCorrectionAngle);
         telemetry.addData("Latest Distance", robot.limelight.latestAimPointDistance);
         telemetry.addData("Latest Target Speed", robot.limelight.maxTargetSpeed);
+        telemetry.addData("Pipeline", robot.limelight.pipeline);
 
         //PLAYER 1 CONTROLS
 
@@ -72,7 +73,7 @@ public class TeleOpMode extends LinearOpMode {
         //PLAYER 2 CONTROLS
 
         robot.intake.setPower(-gamepad2.left_stick_y);
-        robot.uptake.setPower(gamepad2.right_stick_y);
+        robot.uptake.setPower(-gamepad2.right_stick_y);
 
         if (gamepad2.dpadDownWasPressed())  { shootVelocity -= 50; }
         if (gamepad2.dpadUpWasPressed())  { shootVelocity += 50; }

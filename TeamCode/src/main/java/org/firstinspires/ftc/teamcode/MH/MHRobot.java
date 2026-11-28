@@ -40,7 +40,6 @@ public class MHRobot {
     public void init(HardwareMap hardwareMap, MHRobot.team t, Telemetry tel)
     {
         telemetry = tel;
-        robotTeam = t;
         voltageSensor = hardwareMap.get(VoltageSensor.class, "Control Hub");
 
         backRightMotor = hardwareMap.get(DcMotorEx.class,"backRightDrive");
@@ -57,7 +56,9 @@ public class MHRobot {
         backRightMotor.setZeroPowerBehavior(DcMotor.ZeroPowerBehavior.BRAKE);
 
         intake = hardwareMap.get(DcMotorEx.class, "intake");
+        intake.setDirection(DcMotorEx.Direction.FORWARD);
         uptake = hardwareMap.get(DcMotorEx.class, "uptake");
+        intake.setDirection(DcMotorEx.Direction.REVERSE);
 
         outtakeP = hardwareMap.get(DcMotorEx.class, "outtakeP");
         outtakeP.setMode(DcMotor.RunMode.RUN_USING_ENCODER);
@@ -68,8 +69,9 @@ public class MHRobot {
         outtakeN.setDirection(DcMotorSimple.Direction.REVERSE);
         outtakeN.setZeroPowerBehavior(DcMotor.ZeroPowerBehavior.FLOAT);
 
-        //TODO : CHANGE THIS ANGLE AND HEIGHT OR DISTANCE AND ANGLE CALCS WILL BE WRONG
+        //TODO : CHANGE THIS ANGLE AND HEIGHT WHEN LIMELIGHT IS MOVED
         limelight.init(hardwareMap.get(Limelight3A.class, "limelight"), 30, 14);
+        setTeam(t);
 
         imu.init(hardwareMap.get(IMU.class, "imu"), imu.getConfig1());
     }
@@ -104,14 +106,36 @@ public class MHRobot {
         shooter.setVelocity(velocity);
     }
 
-    //probably works? might need to be reversed bc motor goes the other way and I copied from shooter code
-    public void runIntakeAtVelocity(int velocity) {
-        float F =  (float) (-449.47321*Math.pow(velocity,-0.619854f)+48.96472-(2.35*voltage));
+    public void runIntake(float power) {
+        intake.setPower(power);
+    }
 
-        //p used to be 300 - test!!
-        PIDFCoefficients coefficients = new PIDFCoefficients(275, 0.0 ,0.005,15.2);
-        intake.setPIDFCoefficients(DcMotor.RunMode.RUN_USING_ENCODER, coefficients);
-        intake.setVelocity(velocity);
+    public void stopIntake() {
+        intake.setPower(0);
+    }
+    public void runUptake(float power) {
+        uptake.setPower(power);
+    }
+
+    public void stopUptake() {
+        uptake.setPower(0);
+    }
+
+    public void setTeam(MHRobot.team t) {
+        robotTeam = t;
+        if (t == team.RED) {
+            limelight.setPipeline(4);
+        }
+        if (t == team.BLUE) {
+            limelight.setPipeline(5);
+        }
+        if (t == team.NULL) {
+            limelight.setPipeline(6);
+        }
+    }
+
+    public team getTeam() {
+        return robotTeam;
     }
 
     public void setAllMotorPowers(double power) {

@@ -14,7 +14,7 @@ public class MHAuto extends LinearOpMode {
 
         robot.init(hardwareMap, MHRobot.team.NULL, telemetry);
         //first off, we need to know what team we're on for pedro pathing to work good. get team (same as teleop does)
-        if (robot.robotTeam == MHRobot.team.RED) {
+        if (robot.getTeam() == MHRobot.team.RED) {
             //pedro pathing to hives (Zel)
 
             //outtake on! yaey
@@ -27,7 +27,7 @@ public class MHAuto extends LinearOpMode {
             //pedropathing to flowers probably to get nectars
 
             //intake and paddle
-            robot.runIntakeAtVelocity(1500);
+            robot.runIntake(1);
 
 
         }

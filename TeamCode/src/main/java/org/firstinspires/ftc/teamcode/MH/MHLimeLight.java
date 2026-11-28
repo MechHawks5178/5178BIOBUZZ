@@ -11,6 +11,8 @@ import org.firstinspires.ftc.robotcore.external.Telemetry;
 import org.firstinspires.ftc.robotcore.external.navigation.Pose3D;
 
 public class MHLimeLight {
+    public int TEMP = 0;
+    public int pipeline = 0;
 
     public LLResult latestResult;
     public LLResultTypes.FiducialResult latestFiducial;
@@ -40,9 +42,32 @@ public class MHLimeLight {
         mountHeightInches = height;
         limelight = l;
         limelight.setPollRateHz(100);
-        limelight.pipelineSwitch(0);
+        limelight.pipelineSwitch(6);
         limelight.start();
         latestTag = 0;
+    }
+    public boolean update() {
+        latestResult = limelight.getLatestResult();
+        if (latestResult != null) {
+            if (!latestResult.getFiducialResults().isEmpty()) {
+
+                latestFiducial = latestResult.getFiducialResults().get(0);
+                latestTag = latestFiducial.getFiducialId();
+                setlatestTagTeam();
+
+                latestTy = (float) latestResult.getTy();
+                latestTx = (float) latestResult.getTx();
+                latestTa = (float) latestResult.getTa();
+
+                latestApriltagYaw = (float) latestResult.getFiducialResults().get(0).getTargetPoseRobotSpace().getOrientation().getPitch();
+
+                updateAimPointCorrectionAngleAndDistance();
+
+                return true;
+            }
+        }
+        latestAimPointCorrectionAngle = 0;
+        return false;
     }
 
     public float getApriltagFloorDistance() {
@@ -84,6 +109,19 @@ public class MHLimeLight {
         latestAimPointDistance = (float) Math.sqrt(Math.pow(x2,2)+Math.pow(y2, 2));
     }
 
+    public void setPipeline(int p) {
+        //0, 1 - RED SIDES CENTER
+        //2, 3 - BLU SIDES CENTRR
+        //4 - ALL RED CENTER
+        //5 - ALL BLU CENTER
+        //6 - ALL CENTER
+        //7 - ALL
+        limelight.pipelineSwitch(p);
+        pipeline = p;
+    }
+
+
+
     public boolean localise(IMU imu, Telemetry telemetry)
     {
         //I literally have no clue what this function is for?? idk when you'd use it
@@ -109,29 +147,7 @@ public class MHLimeLight {
         }
         return true;
     }
-    public boolean update() {
-        latestResult = limelight.getLatestResult();
-        if (latestResult != null) {
-            if (!latestResult.getFiducialResults().isEmpty()) {
 
-                latestFiducial = latestResult.getFiducialResults().get(0);
-                latestTag = latestFiducial.getFiducialId();
-                setlatestTagTeam();
-
-                latestTy = (float) latestResult.getTy();
-                latestTx = (float) latestResult.getTx();
-                latestTa = (float) latestResult.getTa();
-
-                latestApriltagYaw = (float) latestResult.getFiducialResults().get(0).getTargetPoseRobotSpace().getOrientation().getPitch();
-
-                updateAimPointCorrectionAngleAndDistance();
-
-                return true;
-            }
-        }
-        latestAimPointCorrectionAngle = 0;
-        return false;
-    }
     public MHRobot.team getTagTeam(int tag) {
         if (latestTag == 30 || latestTag == 31 ||latestTag == 32||latestTag == 33||latestTag == 34||latestTag == 35||latestTag == 36||latestTag == 37) {
             return MHRobot.team.BLUE;
